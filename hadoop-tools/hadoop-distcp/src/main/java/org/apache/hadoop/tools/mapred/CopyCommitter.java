@@ -151,6 +151,10 @@ public class CopyCommitter extends FileOutputCommitter {
   private void cleanupTempFiles(JobContext context) {
     try {
       Configuration conf = context.getConfiguration();
+      if (conf.getBoolean(DistCpConstants.CONF_LABEL_DIRECT_WRITE, false)) {
+        LOG.info("-direct option is specified, no need cleanupTempFiles");
+        return;
+      }
 
       Path targetWorkPath = new Path(conf.get(DistCpConstants.CONF_LABEL_TARGET_WORK_PATH));
       FileSystem targetFS = targetWorkPath.getFileSystem(conf);
